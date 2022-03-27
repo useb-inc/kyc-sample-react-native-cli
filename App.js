@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Button, PermissionsAndroid, Platform } from 'react-native';
-import { PERMISSIONS, RESULTS, request, check } from 'react-native-permissions';
+import { StyleSheet, View, Text, PermissionsAndroid, Platform } from 'react-native';
+import { PERMISSIONS, RESULTS, requestMultiple, checkMultiple } from 'react-native-permissions';
 import Example from './Example';
 
 
@@ -8,7 +8,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cameraGranted: false,
+      permissionsGranted: false,
     }
 
     this.handleCameraPermission();
@@ -17,51 +17,65 @@ export default class App extends Component {
   handleCameraPermission = async () => {
     if (Platform.OS === 'android') {
       // Calling the permission function
-      const granted = await PermissionsAndroid.request(
+      const result = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'Example App Camera Permission',
-          message: 'Example App needs access to your camera',
-        },
-      );
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      ]);
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.setCameraGranted(true);
+      if (result['android.permission.CAMERA'] === 'granted'
+        && result['android.permission.RECORD_AUDIO'] === 'granted'
+        && result['android.permission.READ_EXTERNAL_STORAGE'] === 'granted'
+      ) {
+        this.setPermissionsGranted(true);
       } else {
-        this.setCameraGranted(false);
+        this.setPermissionsGranted(false);
       }
-      
-    } else if(Platform.OS = 'ios') {
-      const res = await check(PERMISSIONS.IOS.CAMERA);
 
-      if (res === RESULTS.GRANTED) {
-        this.setCameraGranted(true);
-      } else if (res === RESULTS.DENIED) {
-        const res2 = await request(PERMISSIONS.IOS.CAMERA);
-        if (res2 === RESULTS.GRANTED) {
-          this.setCameraGranted(true)
+    } else if (Platform.OS = 'ios') {
+      const res = await checkMultiple([
+        PERMISSIONS.IOS.CAMERA,
+        PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY,
+        PERMISSIONS.IOS.MICROPHONE,
+      ]);
+
+      if (res[PERMISSIONS.IOS.CAMERA] === RESULTS.GRANTED
+        && res[PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY] === RESULTS.GRANTED
+        && res[PERMISSIONS.IOS.MICROPHONE] === RESULTS.GRANTED
+      ) {
+        this.setPermissionsGranted(true);
+      } else {
+        const res2 = await requestMultiple([
+          PERMISSIONS.IOS.CAMERA,
+          PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY,
+          PERMISSIONS.IOS.MICROPHONE,
+        ]);
+
+        if (res2[PERMISSIONS.IOS.CAMERA] === RESULTS.GRANTED
+          && res2[PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY] === RESULTS.GRANTED
+          && res2[PERMISSIONS.IOS.MICROPHONE] === RESULTS.GRANTED
+        ) {
+          this.setPermissionsGranted(true)
         } else {
-          this.setCameraGranted(false);
+          this.setPermissionsGranted(false);
         }
       }
-    } else {
-      this.setCameraGranted(true)
     }
   }
 
-  setCameraGranted = (value) => {
-    console.log("setCameraGranted : ", value);
-    this.setState({ cameraGranted : value })
+  setPermissionsGranted = (value) => {
+    console.log("setPermissionsGranted", value);
+    this.setState({ permissionsGranted: value })
   }
 
   render() {
     return (
       <View style={styles.container}>
-        { this.state.cameraGranted && 
-        <Example />
+        {this.state.permissionsGranted &&
+          <Example />
         }
-        { !this.state.cameraGranted && 
-        <Text>카메라 권한이 없습니다. 권한 허용 후 이용해주세요.</Text>
+        {!this.state.permissionsGranted &&
+          <Text>카메라/갤러리 접근 권한이 없습니다. 권한 허용 후 이용해주세요.</Text>
         }
       </View>
     );
@@ -71,9 +85,8 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 30
   },
   webview: {
-    flex: 1
+    flex: 1,
   }
 });

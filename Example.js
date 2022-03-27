@@ -125,7 +125,7 @@ class Example extends Component {
                             onChangeText={this.handleBirthdayMM}
                             value={this.state.birthday_mm}
                             keyboardType="number-pad"
-                            maxLength={3}
+                            maxLength={2}
                         />
                         <Text>-</Text>
                         <TextInput
@@ -137,7 +137,7 @@ class Example extends Component {
                             onChangeText={this.handleBirthdayDD}
                             value={this.state.birthday_dd}
                             keyboardType="number-pad"
-                            maxLength={3}
+                            maxLength={2}
                         />
                     </View>
                     <Text>전화번호 ("-" 없이 입력)</Text>
@@ -150,7 +150,7 @@ class Example extends Component {
                         onChangeText={this.handlePhoneNumber}
                         value={this.state.phone_number}
                         keyboardType="numeric"
-                        maxLength={15}
+                        maxLength={11}
                     />
                     <Text>이메일</Text>
                     <TextInput
@@ -222,6 +222,7 @@ class Example extends Component {
     }
 
     onWebViewLoadEnd = () => {
+        console.log('onWebViewLoadEnd');
         // const customer_id = "9";       // idcard
         const customer_id = "12";       // all
         // const customer_id = "13";       // account
@@ -239,8 +240,8 @@ class Example extends Component {
      * 화면에서 post를 던지면 react-native에서 받음
      */
     sendWebViewPostMessage = message => {
-        // console.log('sendWebViewPostMessage : ', message);
-        // console.log("sendWebViewPostMessage (decoded) : ", decodeURIComponent(Base64.atob(message)));
+        console.log('sendWebViewPostMessage', message);
+        // console.log("sendWebViewPostMessage (decoded)", decodeURIComponent(Base64.atob(message)));
         this.appWebview.postMessage(message);
     }
 
@@ -248,9 +249,9 @@ class Example extends Component {
      * 화면에서 post를 던지면 react-native에서 받음
      */
     onReceivedWebViewMessage = event => {
-        // console.log('onReceivedWebViewMessage : ', event.nativeEvent.data);
+        console.log('onReceivedWebViewMessage', event.nativeEvent.data);
         const decodedMsg = decodeURIComponent(Base64.atob(event.nativeEvent.data));
-        // console.log('onReceivedWebViewMessage (decode) : ', decodedMsg);
+        // console.log('onReceivedWebViewMessage (decode)', decodedMsg);
 
         let msgData;
         try {
@@ -311,7 +312,6 @@ const Base64 = {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 30
     },
     webview: {
         flex: 1,
