@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Button, TextInput } from 'react-native';
+import { StyleSheet, View, Text, Button, TextInput, ScrollView } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 class Example extends Component {
@@ -7,22 +7,28 @@ class Example extends Component {
         super(props);
 
         this.appWebview = null;
-        this.domain = "https://kyc-int.useb.co.kr/auth";
+        this.domain = "https://kyc.useb.co.kr/auth";
 
         this.state = {
             progress : "toDo",      // "toDo", "inProgress", "done"
             indexPage: { uri: this.domain + '?ver=1' },
             webViewVisible: false,
             name: "",
-            birthday: "",
+            birthday_yyyy: "",
+            birthday_mm: "",
+            birthday_dd: "",
             phone_number: "",
             email: "",
-            responsedData: "",
+            evt_result: "",
+            rsp_review_result: "",
+            rsp_result: "",
         };
     }
 
     startButtonHandler = () => {
-        if (!this.state.name || !this.state.birthday || !this.state.phone_number || !this.state.email) {
+        if (!this.state.name 
+            || !this.state.birthday_yyyy || !this.state.birthday_mm || !this.state.birthday_dd 
+            || !this.state.phone_number || !this.state.email) {
             alert('필수 정보가 입력되지 않았습니다.');
             this.restartButtonHandler();
             return;
@@ -31,11 +37,47 @@ class Example extends Component {
         this.setState({ progress: "inProgress", webViewVisible: true });
     }
 
-    restartButtonHandler = () => this.setState({ webViewVisible: false, progress: "toDo", responsedData: "" });
-    doneProcessHandler = (msgData) => this.setState({ webViewVisible: true, progress: "done", responsedData: msgData });
+    restartButtonHandler = () => this.setState({ 
+        webViewVisible: false, progress: "toDo", 
+        evt_result: "",
+        rsp_result: "",
+        rsp_review_result: "" 
+    });
+
+    doneProcessHandler = (msgData) => {
+        if (msgData?.review_result) {
+            if (msgData?.review_result?.id_card?.id_card_image) {
+                msgData.review_result.id_card.id_card_image
+                    = msgData.review_result.id_card.id_card_image.substring(0, 20) + "...생략...";
+            }
+            if (msgData?.review_result?.id_card?.id_card_origin) {
+                msgData.review_result.id_card.id_card_origin
+                    = msgData.review_result.id_card.id_card_origin.substring(0, 20) + "...생략...";
+            }
+            if (msgData?.review_result?.id_card?.id_crop_image) {
+                msgData.review_result.id_card.id_crop_image
+                    = msgData.review_result.id_card.id_crop_image.substring(0, 20) + "...생략...";
+            }
+            if (msgData?.review_result?.face_check?.selfie_image) {
+                msgData.review_result.face_check.selfie_image
+                    = msgData.review_result.face_check.selfie_image.substring(0, 20) + "...생략...";
+            }
+
+            this.setState({ 
+                rsp_result: JSON.stringify(msgData.result),
+                rsp_review_result: JSON.stringify(msgData.review_result) 
+            });
+        } else if (msgData?.result) {
+            this.setState({ evt_result: JSON.stringify(msgData.result) });
+
+            this.setState({ webViewVisible: true, progress: "done" });
+        }
+    };
     
     handleName = text => this.setState({ name: text });
-    handleBirthday = text => this.setState({ birthday: text });
+    handleBirthdayYYYY = text => this.setState({ birthday_yyyy: text });
+    handleBirthdayMM = text => this.setState({ birthday_mm: text });
+    handleBirthdayDD = text => this.setState({ birthday_dd: text });
     handlePhoneNumber = text => this.setState({ phone_number: text });
     handleEmail = text => this.setState({ email: text });
 
@@ -59,18 +101,46 @@ class Example extends Component {
                         onChangeText={this.handleName}
                         value={this.state.name}
                     />
-                    <Text>생년월일</Text>
-                    <TextInput
-                        style={styles.input}
-                        underlineColorAndroid="blue"
-                        placeholder="YYYY-MM-DD"
-                        placeholderTextColor="gray"
-                        autoCapitalize="none"
-                        onChangeText={this.handleBirthday}
-                        value={this.state.birthday}
-                        keyboardType="decimal-pad"
-                    />
-                    <Text>전화번호</Text>
+                    
+                    <Text>생년월일(YYYY-MM-DD)</Text>
+                    <View style={styles.birthdayContainer}>
+                        <TextInput
+                            style={styles.birthdayInput}
+                            underlineColorAndroid="blue"
+                            placeholder="YYYY"
+                            placeholderTextColor="gray"
+                            autoCapitalize="none"
+                            onChangeText={this.handleBirthdayYYYY}
+                            value={this.state.birthday_yyyy}
+                            keyboardType="number-pad"
+                            maxLength={4}
+                        />
+                        <Text>-</Text>
+                        <TextInput
+                            style={styles.birthdayInput}
+                            underlineColorAndroid="blue"
+                            placeholder="MM"
+                            placeholderTextColor="gray"
+                            autoCapitalize="none"
+                            onChangeText={this.handleBirthdayMM}
+                            value={this.state.birthday_mm}
+                            keyboardType="number-pad"
+                            maxLength={3}
+                        />
+                        <Text>-</Text>
+                        <TextInput
+                            style={styles.birthdayInput}
+                            underlineColorAndroid="blue"
+                            placeholder="DD"
+                            placeholderTextColor="gray"
+                            autoCapitalize="none"
+                            onChangeText={this.handleBirthdayDD}
+                            value={this.state.birthday_dd}
+                            keyboardType="number-pad"
+                            maxLength={3}
+                        />
+                    </View>
+                    <Text>전화번호 ("-" 없이 입력)</Text>
                     <TextInput
                         style={styles.input}
                         underlineColorAndroid="blue"
@@ -79,7 +149,8 @@ class Example extends Component {
                         autoCapitalize="none"
                         onChangeText={this.handlePhoneNumber}
                         value={this.state.phone_number}
-                        keyboardType="phone-pad"
+                        keyboardType="numeric"
+                        maxLength={15}
                     />
                     <Text>이메일</Text>
                     <TextInput
@@ -108,7 +179,7 @@ class Example extends Component {
                     allowsInlineMediaPlayback={true}
                     startInLoadingState={true}
                     allowUniversalAccessFromFileURLs={true}
-                    onMessage={this.onWebViewMessage}
+                    onMessage={this.onReceivedWebViewMessage}
                     onLoadEnd={this.onWebViewLoadEnd}
                 />
                 }
@@ -119,7 +190,31 @@ class Example extends Component {
                         title="Restart"
                         color="blue"
                     />
-                    <Text>결과 : {this.state.responsedData}</Text>
+                    
+                    <Text>이벤트</Text>
+                    <ScrollView style={{
+                        minHeight: 100,
+                        maxHeight: '20%',
+                        borderStyle: "solid",
+                        borderWidth: 1,
+                        borderColor: 'blue',
+                    }}>
+                        <Text>result : {this.state.evt_result}</Text>
+                    </ScrollView>
+
+                    <Text>상세결과</Text>
+                    <ScrollView style={{
+                        minHeight: 300,
+                        maxHeight: '60%',
+                        borderStyle: "solid",
+                        borderWidth: 1,
+                        borderColor: 'blue',
+                        
+                    }}>
+                        <Text>result : {this.state.rsp_result}</Text>
+                        <Text>review_result : {this.state.rsp_review_result}</Text>
+                    </ScrollView>
+                    
                 </View>
                 }
             </View>
@@ -127,9 +222,12 @@ class Example extends Component {
     }
 
     onWebViewLoadEnd = () => {
-        let params = { "customer_id": "9", "id": "demoUser", "key": "demoUser0000!" };
+        // const customer_id = "9";       // idcard
+        const customer_id = "12";       // all
+        // const customer_id = "13";       // account
+        let params = { "customer_id": customer_id, "id": "demoUser", "key": "demoUser0000!" };
         params.name = this.state.name;
-        params.birthday = this.state.birthday;
+        params.birthday = [this.state.birthday_yyyy, this.state.birthday_mm, this.state.birthday_dd].join('-');
         params.phone_number = this.state.phone_number;
         params.email = this.state.email;
 
@@ -141,33 +239,28 @@ class Example extends Component {
      * 화면에서 post를 던지면 react-native에서 받음
      */
     sendWebViewPostMessage = message => {
-        
-        console.log('sendWebViewPostMessage', message);
-        alert("sendMsg : " + message);
-        alert("sendMsg Original : " + decodeURIComponent(Base64.atob(message)));
+        // console.log('sendWebViewPostMessage : ', message);
+        // console.log("sendWebViewPostMessage (decoded) : ", decodeURIComponent(Base64.atob(message)));
         this.appWebview.postMessage(message);
     }
 
     /**
      * 화면에서 post를 던지면 react-native에서 받음
      */
-    onWebViewMessage = event => {
-        console.log('onWebViewMessage', event.nativeEvent.data);
+    onReceivedWebViewMessage = event => {
+        // console.log('onReceivedWebViewMessage : ', event.nativeEvent.data);
         const decodedMsg = decodeURIComponent(Base64.atob(event.nativeEvent.data));
-        console.log('decodedMsg', decodedMsg);
-        alert('decodedMsg : ' + decodedMsg);
-
-        this.doneProcessHandler(decodedMsg);
+        // console.log('onReceivedWebViewMessage (decode) : ', decodedMsg);
 
         let msgData;
-        
         try {
             msgData = JSON.parse(decodedMsg) || {}
+            this.doneProcessHandler(msgData);
         } catch (error) {
             console.error(error)
             return
         }
-        alert('msgData : ' + JSON.stringify(msgData));
+        // console.log('msgData : ', JSON.stringify(msgData));
         // this[msgData.targetFunc].apply(this, [msgData]);
     }
 
@@ -221,8 +314,15 @@ const styles = StyleSheet.create({
         paddingTop: 30
     },
     webview: {
-        flex: 1
-    }
+        flex: 1,
+    },
+    birthdayContainer: {
+        flexDirection: 'row',
+        minHeight: 20,
+    },
+    birthdayInput: {
+        width: '32%',
+    },
 });
 
 export default Example;

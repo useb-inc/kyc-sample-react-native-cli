@@ -51,7 +51,6 @@ export default class App extends Component {
 
   setCameraGranted = (value) => {
     console.log("setCameraGranted : ", value);
-    alert("setCameraGranted : " + value);
     this.setState({ cameraGranted : value })
   }
 
