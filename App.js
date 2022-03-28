@@ -42,7 +42,7 @@ export default class App extends Component {
       } else {
         this.setPermissionsGranted(false);
       }
-    } else if ((Platform.OS = 'ios')) {
+    } else if (Platform.OS === 'ios') {
       const res = await checkMultiple([
         PERMISSIONS.IOS.CAMERA,
         PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY,
@@ -56,16 +56,20 @@ export default class App extends Component {
       ) {
         this.setPermissionsGranted(true);
       } else {
+        console.log('Need Permission');
         const res2 = await requestMultiple([
           PERMISSIONS.IOS.CAMERA,
           PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY,
           PERMISSIONS.IOS.MICROPHONE,
         ]);
+        console.log('Permission Status' + JSON.stringify(res2));
 
         if (
-          res2[PERMISSIONS.IOS.CAMERA] === RESULTS.GRANTED &&
-          res2[PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY] === RESULTS.GRANTED &&
-          res2[PERMISSIONS.IOS.MICROPHONE] === RESULTS.GRANTED
+          res2[PERMISSIONS.IOS.CAMERA] === RESULTS.GRANTED
+          //&&
+          //res2[PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY] === RESULTS.GRANTED &&
+          //res2[PERMISSIONS.IOS.MICROPHONE] === RESULTS.GRANTED
+          // false가 아닌 unavailable이 나오는 issue가 있으나, unavailable이더라도 사용 가능함을 확인함 (iPad Air 4th, 2022.03.28 )
         ) {
           this.setPermissionsGranted(true);
         } else {
