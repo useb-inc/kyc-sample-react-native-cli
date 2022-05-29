@@ -41,7 +41,7 @@ class Example extends Component {
       !this.state.phone_number ||
       !this.state.email
     ) {
-      alert('필수 정보가 입력되지 않았습니다.');
+      alert('필수 정보가 입력되지 않았습니다. Required information is not entered');
       this.restartButtonHandler();
       return;
     }
