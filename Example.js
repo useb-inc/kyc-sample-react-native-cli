@@ -109,7 +109,7 @@ class Example extends Component {
               title="Start"
               color="blue"
             />
-            <Text>이름</Text>
+            <Text>이름(name)</Text>
             <TextInput
               style={styles.input}
               underlineColorAndroid="blue"
@@ -120,7 +120,7 @@ class Example extends Component {
               value={this.state.name}
             />
 
-            <Text>생년월일(YYYY-MM-DD)</Text>
+            <Text>생년월일(DOB, YYYY-MM-DD)</Text>
             <View style={styles.birthdayContainer}>
               <TextInput
                 style={styles.birthdayInput}
@@ -158,7 +158,7 @@ class Example extends Component {
                 maxLength={2}
               />
             </View>
-            <Text>전화번호 ("-" 없이 입력)</Text>
+            <Text>전화번호 (cellphone number, input number without "-")</Text>
             <TextInput
               style={styles.input}
               underlineColorAndroid="blue"
@@ -170,7 +170,7 @@ class Example extends Component {
               keyboardType="numeric"
               maxLength={11}
             />
-            <Text>이메일</Text>
+            <Text>이메일(email)</Text>
             <TextInput
               style={styles.input}
               underlineColorAndroid="blue"
@@ -208,7 +208,7 @@ class Example extends Component {
               color="blue"
             />
 
-            <Text>이벤트</Text>
+            <Text>이벤트(event)</Text>
             <ScrollView
               style={{
                 minHeight: 100,
@@ -220,7 +220,7 @@ class Example extends Component {
               <Text>result : {this.state.evt_result}</Text>
             </ScrollView>
 
-            <Text>상세결과</Text>
+            <Text>상세결과(result detail)</Text>
             <ScrollView
               style={{
                 minHeight: 300,
@@ -262,7 +262,7 @@ class Example extends Component {
   };
 
   /**
-   * 화면에서 post를 던지면 react-native에서 받음
+   * 화면에서 post를 던지면 react-native에서 받음(Throw a post on the screen, you will receive it from react-native)
    */
   sendWebViewPostMessage = message => {
     console.log('sendWebViewPostMessage', message);
@@ -271,7 +271,7 @@ class Example extends Component {
   };
 
   /**
-   * 화면에서 post를 던지면 react-native에서 받음
+   * 화면에서 post를 던지면 react-native에서 받음(Throw a post on the screen, you will receive it from react-native)
    */
   onReceivedWebViewMessage = event => {
     console.log('onReceivedWebViewMessage', event.nativeEvent.data);
