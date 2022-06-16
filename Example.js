@@ -6,6 +6,7 @@ import {
   Button,
   TextInput,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
 
@@ -14,7 +15,7 @@ class Example extends Component {
     super(props);
 
     this.appWebview = null;
-    this.domain = 'https://kyc.useb.co.kr/auth';
+    this.domain = 'https://kyc-stg.useb.co.kr/auth';
 
     this.state = {
       progress: 'toDo', // "toDo", "inProgress", "done"
@@ -103,13 +104,8 @@ class Example extends Component {
     return (
       <View style={styles.container}>
         {this.state.progress === 'toDo' && (
-          <View>
-            <Button
-              onPress={this.startButtonHandler}
-              title="Start"
-              color="blue"
-            />
-            <Text>이름</Text>
+          <View style={styles.userInfoInput}>
+            <Text styles={styles.label}>이름</Text>
             <TextInput
               style={styles.input}
               underlineColorAndroid="blue"
@@ -120,7 +116,7 @@ class Example extends Component {
               value={this.state.name}
             />
 
-            <Text>생년월일(YYYY-MM-DD)</Text>
+            <Text styles={styles.label}>생년월일(YYYY-MM-DD)</Text>
             <View style={styles.birthdayContainer}>
               <TextInput
                 style={styles.birthdayInput}
@@ -133,7 +129,7 @@ class Example extends Component {
                 keyboardType="number-pad"
                 maxLength={4}
               />
-              <Text>-</Text>
+              <Text> - </Text>
               <TextInput
                 style={styles.birthdayInput}
                 underlineColorAndroid="blue"
@@ -145,7 +141,7 @@ class Example extends Component {
                 keyboardType="number-pad"
                 maxLength={2}
               />
-              <Text>-</Text>
+              <Text> - </Text>
               <TextInput
                 style={styles.birthdayInput}
                 underlineColorAndroid="blue"
@@ -158,7 +154,7 @@ class Example extends Component {
                 maxLength={2}
               />
             </View>
-            <Text>전화번호 ("-" 없이 입력)</Text>
+            <Text styles={styles.label}>전화번호 ("-" 없이 입력)</Text>
             <TextInput
               style={styles.input}
               underlineColorAndroid="blue"
@@ -170,7 +166,7 @@ class Example extends Component {
               keyboardType="numeric"
               maxLength={11}
             />
-            <Text>이메일</Text>
+            <Text styles={styles.label}>이메일</Text>
             <TextInput
               style={styles.input}
               underlineColorAndroid="blue"
@@ -181,24 +177,32 @@ class Example extends Component {
               value={this.state.email}
               keyboardType="email-address"
             />
+            <Button
+              onPress={this.startButtonHandler}
+              title="Start"
+              color="blue"
+              style={styles.submitBtn}
+            />
           </View>
         )}
         {this.state.progress === 'inProgress' && (
-          <WebView
-            style={styles.webview}
-            source={this.state.indexPage}
-            originWhitelist={['*']}
-            ref={webview => (this.appWebview = webview)}
-            javaScriptEnabled={true}
-            useWebKit={true}
-            mediaPlaybackRequiresUserAction={false}
-            domStorageEnabled={true}
-            allowsInlineMediaPlayback={true}
-            startInLoadingState={true}
-            allowUniversalAccessFromFileURLs={true}
-            onMessage={this.onReceivedWebViewMessage}
-            onLoadEnd={this.onWebViewLoadEnd}
-          />
+          <SafeAreaView>
+            <WebView
+              style={styles.webview}
+              source={this.state.indexPage}
+              originWhitelist={['*']}
+              ref={webview => (this.appWebview = webview)}
+              javaScriptEnabled={true}
+              useWebKit={true}
+              mediaPlaybackRequiresUserAction={false}
+              domStorageEnabled={true}
+              allowsInlineMediaPlayback={true}
+              startInLoadingState={true}
+              allowUniversalAccessFromFileURLs={true}
+              onMessage={this.onReceivedWebViewMessage}
+              onLoadEnd={this.onWebViewLoadEnd}
+            />
+          </SafeAreaView>
         )}
         {this.state.progress === 'done' && (
           <View>
@@ -343,17 +347,38 @@ const Base64 = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: '10%',
+    paddingTop: '10%',
   },
   webview: {
     flex: 1,
   },
+  label: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  input: {
+    marginTop: 10,
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
+  userInfoInput: {
+    padding: '10%',
+  },
+  submitBtn: {
+    backgroundColor: 'black',
+  },
   birthdayContainer: {
     flexDirection: 'row',
     minHeight: 20,
+    marginBottom: 20,
+    alignItems: 'center',
   },
   birthdayInput: {
-    width: '32%',
+    width: '30.5%',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
   },
 });
 
