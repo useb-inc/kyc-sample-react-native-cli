@@ -431,6 +431,9 @@
 			baseConfigurationReference = 621C9D3563912823948644F9 /* Pods-useBkycRNcli-useBkycRNcliTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3TF29GXQV6;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -447,8 +450,9 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = kr.co.useb.kyc.RN.cli;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/useBkycRNcli.app/useBkycRNcli";
 			};
 			name = Debug;
@@ -458,7 +462,10 @@
 			baseConfigurationReference = E5006AF4B2425D03AAA347A3 /* Pods-useBkycRNcli-useBkycRNcliTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 3TF29GXQV6;
 				INFOPLIST_FILE = useBkycRNcliTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -471,8 +478,9 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = kr.co.useb.kyc.RN.cli;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/useBkycRNcli.app/useBkycRNcli";
 			};
 			name = Release;
@@ -487,6 +495,7 @@
 				DEVELOPMENT_TEAM = 3TF29GXQV6;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = useBkycRNcli/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "useB KYC RN CLI";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -496,7 +505,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.useB.kyc.RN.cli;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.co.useb.kyc.RN.cli;
 				PRODUCT_NAME = useBkycRNcli;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -513,6 +522,7 @@
 				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 3TF29GXQV6;
 				INFOPLIST_FILE = useBkycRNcli/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "useB KYC RN CLI";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -522,7 +532,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.useB.kyc.RN.cli;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.co.useb.kyc.RN.cli;
 				PRODUCT_NAME = useBkycRNcli;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
